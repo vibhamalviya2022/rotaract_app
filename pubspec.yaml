@@ -41,7 +41,7 @@ dependencies:
   provider:
   flutter_barcode_scanner:
   intl:
-  image_picker:
+  image_picker: ^0.8.5+3
   country_code_picker:
   fluttertoast:
   pinput: ^2.2.10

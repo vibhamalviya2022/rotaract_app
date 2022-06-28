@@ -23,9 +23,9 @@ class _ActivityScreenState extends State<ActivityScreen> {
   List<dynamic> comment=[];
   List<File> images = [];
   Future _imageFromGallery(int index) async {
-    XFile? image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    // XFile? image = await ImagePicker.pickImage(source: ImageSource.gallery);
     setState(() {
-      images.insert(index, File(image!.path));
+      // images.insert(index, File(image!.path));
       //images.removeAt(index + 1);
     });
   }
