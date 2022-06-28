@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:rotaract_app/APIs/api.dart';
 import 'package:rotaract_app/model/feedback_model/feedback_model.dart';
 import 'package:rotaract_app/model/get_all_doctor_model.dart';
+import 'package:rotaract_app/model/homepage_model/get_all_event_calender_model.dart';
 import 'package:rotaract_app/model/post_ask_model/add_post_ask_model.dart';
 import 'package:rotaract_app/model/post_ask_model/get_all_ask_model.dart';
 import '../model/all_manage_members_model/get_all_manage_members_model.dart';
@@ -147,6 +148,7 @@ class ProviderNotifier extends ChangeNotifier{
   List<GetAllEventData> getAllEventDataEventList = [];
   Future getAllEventShowinCalanderNotifier() async {
     var res = await Api.getAllEventModelApi();
+    print("Calender Event Show$res");
     resGetAllEventShowinCalanderNotififeir(res,res!.data!);
     notifyListeners();
   }
@@ -171,6 +173,19 @@ class ProviderNotifier extends ChangeNotifier{
     getAllDateEventCurrentDateNP = data;
     notifyListeners();
   }
+
+  ///Home in All Calender Event Show Notifier
+  List<CalenderEventData?> getCalenderList = [];
+  Future getAllEventCalenderShowNotifier() async {
+    var res = await Api.getCalenderEventShow();
+    print("print res Event :-)Show${res}");
+    resGetCalenderEventShowNotififeir(res!.data);
+    notifyListeners();
+  }resGetCalenderEventShowNotififeir(var getFeedBackData){
+    getCalenderList = getFeedBackData;
+    notifyListeners();
+  }
+
 
   /// this is for the getAllDoctor Notifier
   GetAllDoctorModel? allDoctorListNp;

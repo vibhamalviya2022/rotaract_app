@@ -17,6 +17,7 @@ import '../model/board_of_director/get_all_bod_model.dart';
 import '../model/download_general_pdf_model/download_model.dart';
 import '../model/get_all_doctor_model.dart';
 import '../model/get_all_member_model.dart';
+import '../model/homepage_model/get_all_event_calender_model.dart';
 import '../model/homepage_model/get_all_event_model.dart';
 import '../model/homepage_model/get_current_date_event_model.dart';
 import '../model/login_model/login_model.dart';
@@ -58,9 +59,9 @@ class Api {
     var url = baseUrl + "admins/getAllEvent";
     print("getAllEventModelApi url $url");
     try {
-      var response = await http.post(Uri.parse(url));
+      var response = await http.post( Uri.parse(url));
       if (response.statusCode == 200) {
-        print("getAllEventModelApi Data  body${response.body}");
+        print("getAllEventModelApi Data body${response.body}");
         return GetAllEventModel.fromJson(jsonDecode(response.body));
       } else {
         print(response.reasonPhrase);
@@ -584,4 +585,29 @@ class Api {
           "getfeedBackApi response code is${response.statusCode}");
     }
   }
+
+  ///Calender Event Api Show
+  static Future<GetAllEventCalenderModel?> getCalenderEventShow() async {
+    var headers = {
+      'Content-Type': 'application/json'
+    };
+    var url = baseUrl + "members/getAllEventDate";
+    var request = http.Request('POST', Uri.parse(url));
+    request.body = json.encode({
+      "fromDate": "01/06/2022",
+      "toDate": "30/06/2022"
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      var jsonD = jsonDecode(await response.stream.bytesToString());
+      return GetAllEventCalenderModel.fromJson(jsonD);
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+  }
+
 }

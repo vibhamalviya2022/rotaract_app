@@ -139,7 +139,7 @@ class _DashboardAarogyamScreenState extends State<DashboardAarogyamScreen> {
                                   // leading: CircleAvatar(
                                   //   backgroundImage: AssetImage( Api.baseUrl + providerNotifier.allDoctorListNp!.data![index].image!.first), // no matter how big it is, it won't overflow
                                   // ),
-                                  trailing: Icon(
+                                  trailing:  Icon(
                                     Icons.arrow_forward_ios,
                                     color: ColorsConstData.appBaseColor,
                                   )),

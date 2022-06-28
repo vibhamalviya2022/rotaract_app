@@ -21,8 +21,8 @@ class _CalendarScreenState extends State<CalendarScreen>
   DateTime? _selectedDay;
   bool isLoading = false;
 
-  Map<DateTime, List<dynamic>> _visibleEvents = {};
-  Map<DateTime, List<dynamic>> _events = {};
+  Map<DateTime, List> _visibleEvents = {};
+  Map<DateTime, List> _events = {};
   List? _selectedEvents;
   CalendarController tableController = CalendarController();
   AnimationController? _controller;
@@ -31,9 +31,10 @@ class _CalendarScreenState extends State<CalendarScreen>
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    _events = {};
     _visibleEvents = _events;
     _selectedEvents = _events[_selectedDay] ?? [];
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 100),
@@ -44,6 +45,12 @@ class _CalendarScreenState extends State<CalendarScreen>
     providerNotifier.getAllEventShowinCalanderNotifier();
     providerNotifier.getAllDateEventShowinNotifier(
         (DateFormat('dd/MM/yyyy').format(DateTime.now()).toString()));
+
+    ///ClenderShow in Event show
+    providerNotifier.getAllEventCalenderShowNotifier().whenComplete(() {
+      getDashboardData();
+    });
+
   }
 
   // Map<DateTime ,List<dynamic>> _gruopEvents(var events){
@@ -56,35 +63,36 @@ class _CalendarScreenState extends State<CalendarScreen>
   //   return data;
   // }
 
-  getDashboardData(String chapterId, String sdate, String edate) async {
+  getDashboardData() async {
+    print("getDashboardData is call");
     ProviderNotifier providerNotifier =
         Provider.of<ProviderNotifier>(context, listen: false);
-    // print(chapterId);
     try {
-      //check Internet Connection
+      print("getDashboardData try");
 
       setState(() {
         isLoading = true;
       });
 
-      // res.then((data) async {
-      //   setState(() {
-      //     isLoading = false;
-      //   });
-      if (providerNotifier.getAllEventDataEventList.isNotEmpty &&
-          providerNotifier.getAllEventDataEventList.length > 0) {
+      if (providerNotifier.getCalenderList.isNotEmpty &&
+          providerNotifier.getCalenderList.length > 0) {
+        print("getDashboardData is providerNotifier.getCalenderList.isNotEmpty");
+
         _events = {};
         for (int i = 0;
-            i < providerNotifier.getAllEventDataEventList.length;
+            i < providerNotifier.getCalenderList.length;
             i++) {
-          _events.addAll({
-            DateTime.parse(providerNotifier.getAllEventDataEventList[i].date
-                    .toString()):
-                providerNotifier.getAllEventDataEventList[i].title
-                    as List<dynamic>
+          print("getDashboardData is providerNotifier.getCalenderList.isNotEmpty for loop${providerNotifier.getCalenderList[i]!.date!}");
+          var dateFormate = DateFormat('yyyy-mm-dd').format(DateTime.parse(providerNotifier.getCalenderList[i]!.date.toString()));
+          print("getDashboardData is date :" + dateFormate.toString());
+          print("getDashboardData is date : date formate" + dateFormate.toString());
+          _events.addAll({DateTime.parse(dateFormate) : providerNotifier.getCalenderList[i]!.event
           });
+          print("getDashboardData is providerNotifier.getCalenderList.isNotEmpty for loop klejeriuiubijsdbjio "+ _events.toString());
+
         }
         _selectedEvents = _events[_selectedDay] ?? [];
+        print("getDashboardData _selectedEvents id is : " + _selectedEvents.toString());
         _visibleEvents = _events;
         print("printg visibale Event Show in flutter$_visibleEvents");
         // _visibleHolidays = _holidays;
@@ -99,7 +107,6 @@ class _CalendarScreenState extends State<CalendarScreen>
           isLoading = false;
           _events.clear();
         });
-        //showMsg("Try Again.");
       }
       // }, onError: (e) {
       //   print("Error : on getDashboardData $e");
@@ -204,6 +211,21 @@ class _CalendarScreenState extends State<CalendarScreen>
               padding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10),
               child: TableCalendar(
                 events: _visibleEvents,
+                initialCalendarFormat: CalendarFormat.month,
+                formatAnimation: FormatAnimation.slide,
+                startingDayOfWeek: StartingDayOfWeek.monday,
+                availableGestures: AvailableGestures.all,
+                availableCalendarFormats: const {
+                  CalendarFormat.month: 'Month',
+                  /*CalendarFormat.twoWeeks: '2 weeks',
+                  CalendarFormat.week: 'Week',*/
+                },
+                calendarStyle: CalendarStyle(
+                  selectedColor: ColorsConstData.appBaseColor,
+                  markersColor: ColorsConstData.appBaseColor,
+                  todayStyle: TextStyle(color: Colors.white, fontSize: 18),
+                  //markersMaxAmount: 7,
+                ),
                 // enabledDayPredicate: _getEventsfromDay(),
                 calendarController: tableController,
                 locale: 'en_US',
@@ -213,27 +235,73 @@ class _CalendarScreenState extends State<CalendarScreen>
                 startDay: DateTime.utc(2010, 10, 16),
                 endDay: DateTime.utc(2030, 3, 14),
                 initialSelectedDay: DateTime.now(),
-                // sixWeekMonthsEnforced: false,
-                availableCalendarFormats: {
-                  CalendarFormat.month: 'Month',
-                },
-                //startingDayOfWeek: StartingDayOfWeek.monday,
-                calendarStyle: CalendarStyle(
-                  todayStyle: TextStyle(color: Colors.white, fontSize: 18),
+                onDaySelected: _onDaySelected,
+                onVisibleDaysChanged: _onVisibleDaysChanged,
 
-                  // isTodayHighlighted: true,
-                  // contentDecoration: BoxDecoration(
-                  //   borderRadius: BorderRadius.circular(20),
-                  //   color: ColorsConstData.appBaseColor
-                  // ),
-                  //    s:
-                  // TextStyle(color: Colors.black, fontSize: 16)
-                ),
+                // sixWeekMonthsEnforced: false,
+
+                //startingDayOfWeek: StartingDayOfWeek.monday,
+
               ),
             ),
           ],
         ),
       ),
     ));
+  }
+
+  void _onVisibleDaysChanged(
+      DateTime first, DateTime last, CalendarFormat format) {
+    setState(() {
+      print(first);
+      print(last);
+
+      /*getDashboardData(chapterId == "null" ? "0" : chapterId,
+          first.toString().substring(0, 10), last.toString().substring(0, 10));
+
+      _visibleEvents = Map.fromEntries(
+        _events.entries.where(
+          (entry) =>
+              entry.key.isAfter(first.subtract(const Duration(days: 1))) &&
+              entry.key.isBefore(last.add(const Duration(days: 1))),
+        ),
+      );
+
+      _visibleHolidays = Map.fromEntries(
+        _holidays.entries.where(
+          (entry) =>
+              entry.key.isAfter(first.subtract(const Duration(days: 1))) &&
+              entry.key.isBefore(last.add(const Duration(days: 1))),
+        ),
+      );*/
+    });
+  }
+
+  void _onDaySelected(DateTime day, List events,List formality) {
+    setState(() {
+      _selectedDay = day;
+      _selectedEvents = events;
+    });
+    print("selectedDay and event");
+    print(_selectedDay);
+    print(_selectedEvents);
+    if (events.length > 0) {
+      String selectedDate = day.toString().substring(0, 10);
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => MultipleEventList(
+      //       date: selectedDate,
+      //       chapterId: chapterId,
+      //       memberId: memberId,
+      //     ),
+      //   ),
+      // );
+    }
+    /*ifx (events.length == 1) {
+      showEventDialog(_selectedEvents);
+    } else if (events.length > 1) {
+      Navigator.pushNamed(context, '/MultipleEventList');
+    }*/
   }
 }
