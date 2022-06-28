@@ -192,7 +192,7 @@ class _AarogyanDetailsScreenState extends State<AarogyanDetailsScreen> {
               dataName: widget.dataDoctor.city!,
             ),
             SizedBox(height: 30,),
-          ]),f
+          ]),
         ),
         bottomNavigationBar:
         Container(
