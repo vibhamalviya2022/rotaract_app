@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:rotaract_app/Screen/all_text_data_const/all_text_data_const.dart';
 import 'package:rotaract_app/Screen/all_text_data_const/border_text_field_const.dart';
 import 'package:rotaract_app/Screen/app_bar/app_bar_data.dart';
 import 'package:rotaract_app/constant/constant.dart';
+import 'package:rotaract_app/provider/providerNotifier.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ContactUsScreen extends StatefulWidget {
@@ -13,10 +16,28 @@ class ContactUsScreen extends StatefulWidget {
 }
 
 class _ContactUsScreenState extends State<ContactUsScreen> {
-
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController messageController = TextEditingController();
+  bool _isContactUs = false;
+
+  Future addContactUsApiCall() async {
+    ProviderNotifier notifierProvider =
+        Provider.of<ProviderNotifier>(context, listen: false);
+    Map body = {
+      "title": nameController.text,
+      "email": emailController.text,
+      "description": messageController.text
+    };
+    notifierProvider.addContactUsDataNotifier(body).whenComplete(() {
+      Fluttertoast.showToast(msg: notifierProvider.contactusData!.message!);
+      setState(() {
+        _isContactUs = false;
+      });
+      Navigator.pop(context);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -27,16 +48,13 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
           preferredSize: Size.fromHeight(60),
           child: AppBarData(
             appBarTitle: "Contact Us",
-            onTap: (){
+            onTap: () {
               Navigator.of(context).pop();
             },
           ),
         ),
 
-
-
-
-///this is old code by susmita
+        ///this is old code by susmita
         // PreferredSize(
         //   preferredSize: Size.fromHeight(60),
         //   child: ClipRRect(
@@ -69,20 +87,20 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
             padding: const EdgeInsets.only(top: 30),
             child: Column(
               children: [
-                AllTextDataConst(textData: "Get in touch!",
+                AllTextDataConst(
+                  textData: "Get in touch!",
                   fontSize: 25,
                   mainAxisAlignment: MainAxisAlignment.center,
                   color: ColorsConstData.appBaseColor,
                 ),
-                AllTextDataConst(textData: "Contact us for quote, help to join the team",
+                AllTextDataConst(
+                  textData: "Contact us for quote, help to join the team",
                   fontSize: 13,
                   mainAxisAlignment: MainAxisAlignment.center,
                   color: Colors.grey,
                 ),
 
-
-
-///this is old code by susmita
+                ///this is old code by susmita
                 // Container(
                 //   padding: EdgeInsets.only(top: 40, bottom: 20),
                 //   alignment: Alignment.center,
@@ -184,40 +202,68 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                               controller: messageController,
                               maxLine: 5,
                             ),
-                            SizedBox(height: size.height*0.02),
+                            SizedBox(height: size.height * 0.02),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              //todo
                               child: Container(
                                 decoration: BoxDecoration(),
-                                child: MaterialButton(
-                                  minWidth: size.width*0.5,
-                                  height: size.height*0.05,
-                                  onPressed: () {
-                                    // Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //         builder: (context) => DashboardPage()));
-                                  },
-                                  color: ColorsConstData.appBaseColor,
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                  child: const Text(
-                                    "Send",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 20,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
+                                //todo material button'
+                                //todo
+                                child: _isContactUs == true
+                                    ?  Center(
+                                        child: CircularProgressIndicator(
+                                          color: ColorsConstData.appBaseColor,
+                                        ),
+                                      )
+                                    : MaterialButton(
+                                        minWidth: size.width * 0.5,
+                                        height: size.height * 0.05,
+                                        onPressed: () {
+                                          if (nameController.text == "") {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                                    content:
+                                                        Text("Enter name")));
+                                          } else if (emailController.text ==
+                                              "") {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                                    content:
+                                                        Text("Enter Email")));
+                                          } else if (messageController.text ==
+                                              "") {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                                    content: Text(
+                                                        "Enter Description")));
+                                          } else {
+                                            setState(() {
+                                              _isContactUs = true;
+                                            });
+                                            addContactUsApiCall();
+                                          }
+                                        },
+                                        color: ColorsConstData.appBaseColor,
+                                        shape: RoundedRectangleBorder(
+                                          side: BorderSide(color: Colors.white),
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                        ),
+                                        child: const Text(
+                                          "Send",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 20,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
                               ),
                             ),
 
-
-
-///this is old code by susmita
+                            ///this is old code by susmita
                             // Material(
                             //   borderRadius: BorderRadius.circular(20),
                             //   elevation: 5,
