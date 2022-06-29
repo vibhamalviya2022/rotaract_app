@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:rotaract_app/model/add_contactus_model/add_contact_us_data_model.dart';
+import 'package:rotaract_app/model/add_feedback_model/add_feedback_data_model.dart';
 import 'package:rotaract_app/model/feedback_model/feedback_model.dart';
 import 'package:rotaract_app/model/post_ask_model/get_all_ask_model.dart';
 import '../model/all_manage_members_model/get_all_manage_members_model.dart';
@@ -586,28 +588,5 @@ class Api {
     }
   }
 
-  ///Calender Event Api Show
-  static Future<GetAllEventCalenderModel?> getCalenderEventShow() async {
-    var headers = {
-      'Content-Type': 'application/json'
-    };
-    var url = baseUrl + "members/getAllEventDate";
-    var request = http.Request('POST', Uri.parse(url));
-    request.body = json.encode({
-      "fromDate": "01/06/2022",
-      "toDate": "30/06/2022"
-    });
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      var jsonD = jsonDecode(await response.stream.bytesToString());
-      return GetAllEventCalenderModel.fromJson(jsonD);
-    }
-    else {
-      print(response.reasonPhrase);
-    }
-  }
 
 }

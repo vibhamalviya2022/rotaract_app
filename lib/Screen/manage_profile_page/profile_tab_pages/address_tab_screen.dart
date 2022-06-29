@@ -50,7 +50,7 @@ class _AddressTabScreenState extends State<AddressTabScreen> {
       selectCountry = providerNotifier.memberList.first!.countries!.first.countryName!;
       talukaController.text = providerNotifier.memberList.first!.taluka!;
       villageController.text = providerNotifier.memberList.first!.village!;
-      selectCountry = providerNotifier.memberList.first!.countryId!;
+      selectCountry = providerNotifier.memberList.first!.countries!.first.countryName.toString();
       selectState =  providerNotifier.memberList.first!.states!.first.stateName.toString();
       selectCity = providerNotifier.memberList.first!.cities!.first.cityName.toString();
     });

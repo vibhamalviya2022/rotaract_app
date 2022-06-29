@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:rotaract_app/APIs/api.dart';
+import 'package:rotaract_app/model/add_contactus_model/add_contact_us_data_model.dart';
+import 'package:rotaract_app/model/add_feedback_model/add_feedback_data_model.dart';
 import 'package:rotaract_app/model/feedback_model/feedback_model.dart';
 import 'package:rotaract_app/model/get_all_doctor_model.dart';
 import 'package:rotaract_app/model/homepage_model/get_all_event_calender_model.dart';
@@ -387,5 +389,35 @@ class ProviderNotifier extends ChangeNotifier{
     notifyListeners();
   }
 
+  /// Add Contact us Data Notifier
+  /// Ashish
+  AddContactUsDataModel? contactusData;
+  List<AddContactUsData> addContactUsDataNp = [];
+  Future addContactUsDataNotifier(body) async{
+    print("addContactUsDataNotifier is calling");
+   var res = await Api().addContactUsApiCalling(body);
+   respAddContactUsDataNotifier(res!.data!,res);
+  }
+  respAddContactUsDataNotifier(AddContactUsData data,var contactdata){
+    addContactUsDataNp.add(data);
+    contactusData = contactdata;
+    print("addContactUsDataNotifier ${data}");
+    notifyListeners();
+  }
 
+  /// Add New FeedBack Data Notifier
+  /// Ashish
+  AddNewFeedBackDataModel? addNewFeedbackData;
+  List<AddNewFeedBackData> addNewFeedBackDataNp = [];
+  Future addNewFeedBackDataNotifier(body) async{
+    print("addNewFeedBackDataNotifier is calling");
+    var res = await Api().addNewFeedBackApiCalling(body);
+    resAddNewFeedBackDataNotifier(res!.data!, res);
+  }
+  resAddNewFeedBackDataNotifier(AddNewFeedBackData data, var addNewFeedBackdata){
+    addNewFeedBackDataNp.add(data);
+    addNewFeedbackData = addNewFeedBackdata;
+    print("addNewFeedBackDataNotifier ${data}");
+    notifyListeners();
+  }
 }

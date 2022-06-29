@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:rotaract_app/Screen/app_bar/app_bar_data.dart';
 import 'package:rotaract_app/constant/constant.dart';
+import 'package:rotaract_app/provider/providerNotifier.dart';
+import 'package:rotaract_app/shared_pfrefs_data/shared_prefs_data.dart';
+import 'package:rotaract_app/shared_pfrefs_data/shared_prefs_key.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({Key? key}) : super(key: key);
@@ -11,11 +17,30 @@ class FeedbackScreen extends StatefulWidget {
 }
 
 class _FeedbackScreenState extends State<FeedbackScreen> {
-  double value = 0.0;
+  double value = 1.0;
+  bool isAddFeedBack = false;
+  TextEditingController feedBackController = TextEditingController();
+
+  Future addNewFeedBackApiCall() async {
+    var memberId = await SharedPrefsData.getStringData(SharedPrefsKey.memberId);
+    ProviderNotifier notifierProvider =
+        Provider.of<ProviderNotifier>(context, listen: false);
+    Map body = {
+      "memberId": memberId.toString(),
+      "rating": value.toString(),
+      "description": feedBackController.text
+    };
+    notifierProvider.addNewFeedBackDataNotifier(body).whenComplete(() {
+      Fluttertoast.showToast(msg: notifierProvider.addNewFeedbackData!.message!);
+      setState(() {
+        isAddFeedBack = false;
+      });
+      Navigator.pop(context);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
@@ -27,27 +52,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
           },
         ),
       ),
-
-      ///this is old code by susmita
-      // AppBar(
-      //   centerTitle: true,
-      //   title:
-      //       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      //     Text('Feedback'),
-      //   ]),
-      //   elevation: 0,
-      //   backgroundColor: ColorsConstData.appBaseColor,
-      //    leading: IconButton(
-      //             onPressed: () {
-      //               Navigator.pop(context);
-      //             },
-      //             icon: const Icon(
-      //               Icons.arrow_back_ios,
-      //               size: 30,
-      //               color: Colors.white,
-      //             ),
-      //           ),
-      // ),
       body: SingleChildScrollView(
         child: Stack(children: [
           Container(
@@ -160,6 +164,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                       elevation: 2,
                       shadowColor: Colors.grey.withOpacity(0.8),
                       child: TextField(
+                        controller: feedBackController,
                         maxLines: 3,
                         decoration: InputDecoration(
                             hintText: 'Describe Your Exprience here',
@@ -174,26 +179,41 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Container(
                         decoration: BoxDecoration(),
-                        child: MaterialButton(
-                          minWidth: double.infinity,
-                          height: 55,
-                          onPressed: () {
-
-                          },
-                          color: ColorsConstData.appBaseColor,
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(color: Colors.white),
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          child: const Text(
-                            "Submit Feedback",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 20,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
+                        child: isAddFeedBack
+                            ? Center(
+                                child: CircularProgressIndicator(
+                                color: ColorsConstData.appBaseColor,
+                              ))
+                            : MaterialButton(
+                                minWidth: double.infinity,
+                                height: 55,
+                                onPressed: () {
+                                  if(feedBackController.text == ""){
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                        content:
+                                        Text("Please enter Description")));
+                                  } else{
+                                    setState(() {
+                                      isAddFeedBack  = true;
+                                    });
+                                    addNewFeedBackApiCall();
+                                  }
+                                },
+                                color: ColorsConstData.appBaseColor,
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: const Text(
+                                  "Submit Feedback",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
                       ),
                     ),
                   ],
