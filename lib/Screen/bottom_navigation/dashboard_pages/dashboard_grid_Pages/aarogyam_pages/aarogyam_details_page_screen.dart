@@ -1,5 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+import 'package:rotaract_app/APIs/api.dart';
 import 'package:rotaract_app/Screen/app_bar/app_bar_data.dart';
 import 'package:rotaract_app/Screen/bottom_navigation/dashboard_pages/dashboard_grid_Pages/aarogyam_pages/aarogyam_details_about_screen.dart';
 import 'package:rotaract_app/constant/constant.dart';
@@ -45,47 +48,26 @@ class _AarogyanDetailsScreenState extends State<AarogyanDetailsScreen> {
             },
           ),
         ),
-
-///this is old code by susmita
-        // PreferredSize(
-        //   preferredSize: Size.fromHeight(60),
-        //   child: ClipRRect(
-        //     borderRadius: BorderRadius.only(
-        //         bottomLeft: Radius.circular(40),
-        //         bottomRight: Radius.circular(40)),
-        //     child: AppBar(
-        //       centerTitle: true,
-        //       title: Text(
-        //         "Doctors Details",
-        //         style: TextStyle(color: Colors.white),
-        //       ),
-        //       elevation: 0,
-        //       backgroundColor: ColorsConstData.appBaseColor,
-        //       leading: IconButton(
-        //         onPressed: () {
-        //           Navigator.pop(context);
-        //         },
-        //         icon: const Icon(
-        //           Icons.arrow_back_ios,
-        //           size: 30,
-        //           color: Colors.white,
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // ),
         body: SingleChildScrollView(
           child: Column(children: [
-           /* Container(
-              padding: EdgeInsets.only(top: 40),
-              alignment: Alignment.bottomCenter,
-              child:Image.network("https://rotarect.herokuapp.com/members/getAllDoctor/"+widget.dataDoctor.image!.first.toString())
-            ),*/
-            //Text("https://rotarect.herokuapp.com/"+widget.dataDoctor.image!.first.toString()),
+            SizedBox(
+            height: 20,
+            ),
+            CircleAvatar(
+              child: ClipOval(
+                child: Container(
+                  child: widget.dataDoctor.image!.first.isEmpty
+                      ? Image.asset('assets/images/man.png',width: 100,height: 100,fit: BoxFit.cover,)
+                 : Image.network(widget.dataDoctor.image!.first.toString(),fit: BoxFit.cover,height: 100,width: 100,)
+                ),
+              ),
+              maxRadius: 60,
+              backgroundColor: Colors.white,
+            ),
             Container(
-              padding: EdgeInsets.only(top: 30),
+              padding: EdgeInsets.only(top: 10),
               child: Text(
-                widget.dataDoctor.name!,
+                widget.dataDoctor.name! == null ? "": widget.dataDoctor.name!,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
@@ -104,12 +86,11 @@ class _AarogyanDetailsScreenState extends State<AarogyanDetailsScreen> {
 
             AarogyamDetailsAboutScreen(
               icons: Icons.person,
-              dataName: "${widget.dataDoctor.name!} ${widget.dataDoctor.lastName!}",
+              dataName: "${widget.dataDoctor.name == null ? "":widget.dataDoctor.name!} ${widget.dataDoctor.lastName == null ? "" : widget.dataDoctor.lastName!}",
             ),
             // AarogyamDetailsAboutScreen(
             //   icons: Icons.person,
             // ),
-
             Padding(
               padding: const EdgeInsets.only(left:15.0),
               child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
@@ -117,7 +98,7 @@ class _AarogyanDetailsScreenState extends State<AarogyanDetailsScreen> {
                 const SizedBox(
                   width: 5,
                 ),
-                Expanded(child: Text("${widget.dataDoctor.subSkill!}")),
+                Expanded(child: Text("${widget.dataDoctor.subSkill == null ? "":widget.dataDoctor.subSkill!}")),
               ]),
             ),
             const Divider(
@@ -128,15 +109,15 @@ class _AarogyanDetailsScreenState extends State<AarogyanDetailsScreen> {
             ),
             AarogyamDetailsAboutScreen(
               icons: Icons.phone,
-              dataName: widget.dataDoctor.phone!,
+              dataName: widget.dataDoctor.phone == null ? "" :  widget.dataDoctor.phone!,
             ),
             AarogyamDetailsAboutScreen(
               icons: Icons.mail,
-              dataName: widget.dataDoctor.email!,
+              dataName: widget.dataDoctor.email == null ? "" :widget.dataDoctor.email!,
             ),
             AarogyamDetailsAboutScreen(
               icons: Icons.arrow_forward,
-              dataName: widget.dataDoctor.category!,
+              dataName: widget.dataDoctor.category == null ? "" : widget.dataDoctor.category!,
             ),
             Padding(
               padding: const EdgeInsets.only(left:15.0),
@@ -145,7 +126,7 @@ class _AarogyanDetailsScreenState extends State<AarogyanDetailsScreen> {
                 const SizedBox(
                   width: 5,
                 ),
-                Expanded(child: Text("${widget.dataDoctor.description!}")),
+                Expanded(child: Text("${widget.dataDoctor.description == null ? "" : widget.dataDoctor.description!}")),
               ]),
             ),
              Divider(
@@ -156,11 +137,11 @@ class _AarogyanDetailsScreenState extends State<AarogyanDetailsScreen> {
             ),
             AarogyamDetailsAboutScreen(
               icons: Icons.arrow_forward,
-              dataName: widget.dataDoctor.experience!,
+              dataName: widget.dataDoctor.experience == null ? "" :widget.dataDoctor.experience!,
             ),
             AarogyamDetailsAboutScreen(
               icons: Icons.arrow_forward,
-              dataName: widget.dataDoctor.category!,
+              dataName: widget.dataDoctor.category == null ? "":widget.dataDoctor.category!,
             ),
 
 
@@ -171,7 +152,7 @@ class _AarogyanDetailsScreenState extends State<AarogyanDetailsScreen> {
                 const SizedBox(
                   width: 5,
                 ),
-                Expanded(child: Text("${widget.dataDoctor.address!}")),
+                Expanded(child: Text("${widget.dataDoctor.address == null ? "": widget.dataDoctor.address!}")),
               ]),
             ),
             const Divider(
@@ -182,14 +163,14 @@ class _AarogyanDetailsScreenState extends State<AarogyanDetailsScreen> {
             ),
             AarogyamDetailsAboutScreen(
               icons: Icons.location_city,
-              dataName: widget.dataDoctor.country!,
+              dataName: widget.dataDoctor.country == null ? "" :widget.dataDoctor.country!,
             ),
             AarogyamDetailsAboutScreen(
               icons: Icons.location_city,
-              dataName: widget.dataDoctor.state!,
+              dataName: widget.dataDoctor.state == null ? "" :widget.dataDoctor.state!,
             ),AarogyamDetailsAboutScreen(
               icons: Icons.place,
-              dataName: widget.dataDoctor.city!,
+              dataName:widget.dataDoctor.state == null ? "": widget.dataDoctor.city!,
             ),
             SizedBox(height: 30,),
           ]),
@@ -203,7 +184,7 @@ class _AarogyanDetailsScreenState extends State<AarogyanDetailsScreen> {
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    launchURL("tel:${widget.dataDoctor.phone!}");
+                    launchURL("tel:${widget.dataDoctor.phone == " "? "" : widget.dataDoctor.phone!}");
                   });
                 },
                 child: Image.asset(
@@ -227,7 +208,7 @@ class _AarogyanDetailsScreenState extends State<AarogyanDetailsScreen> {
                 onTap: () {
                   setState(() {
                     launch(
-                        'mailto:${widget.dataDoctor.email!}?subject=This is Subject Title&body=This is Body of Email');
+                        'mailto:${widget.dataDoctor.email == null ? "" :widget.dataDoctor.email!}?subject=This is Subject Title&body=This is Body of Email');
                   });
                 },
                 child: Image.asset(
@@ -238,7 +219,7 @@ class _AarogyanDetailsScreenState extends State<AarogyanDetailsScreen> {
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    launch("https://wa.me/${widget.dataDoctor.phone!}?text=#msg");
+                    launch("https://wa.me/${widget.dataDoctor.phone == null ? "":widget.dataDoctor.phone!}?text=#msg");
                   });
                 },
                 child: Image.asset(

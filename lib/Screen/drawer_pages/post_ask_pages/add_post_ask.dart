@@ -22,6 +22,7 @@ class _AddPostAskState extends State<AddPostAsk> {
   TextEditingController txtcloseDateController = TextEditingController();
   TextEditingController txtdescriptionController = TextEditingController();
 
+  DateTime selectedDate = DateTime.now();
 
 
   @override
@@ -62,7 +63,7 @@ class _AddPostAskState extends State<AddPostAsk> {
                 providerNotifier.AddPostAskDataNotifier(
                     txtnameController.text,
                     txtaskDateController.text,
-                    txtcloseDateController.text,
+                    "${selectedDate.day}-${selectedDate.month}-${selectedDate.year}",
                     txtdescriptionController.text).whenComplete((){
                       providerNotifier.getPostAskDataNotifier();
                       Fluttertoast.showToast(msg: providerNotifier.AddPostAskListData!.message!);
@@ -163,13 +164,26 @@ class _AddPostAskState extends State<AddPostAsk> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
-              child: BorderTextFieldConst(
-                hintText: "Close Date",
-                controller: txtcloseDateController,
-              ),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                IconButton(onPressed: (){
+                  setState(() {
+                    _selectDate(context);
+                  });
+                }, icon:Icon(Icons.calendar_today_rounded)),
+                Text("${selectedDate.day}-${selectedDate.month}-${selectedDate.year}"),
+              ],
+
             ),
+            // Padding(
+            //   padding: const EdgeInsets.only(bottom: 10.0),
+            //   child: BorderTextFieldConst(
+            //     hintText: "Close Date",
+            //     controller: txtcloseDateController,
+            //   ),
+            // ),
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: AllTextDataConst(
@@ -191,4 +205,20 @@ class _AddPostAskState extends State<AddPostAsk> {
       ),
     );
   }
+
+  _selectDate(context) async {
+    final DateTime selected =  showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2010),
+      lastDate: DateTime(2025),
+    ) as DateTime;
+    if (selected != null && selected != selectedDate) {
+      setState(() {
+        selectedDate = selected;
+        print("current Date$selected");
+      });
+    }
+  }
+
 }

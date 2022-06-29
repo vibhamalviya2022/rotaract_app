@@ -316,7 +316,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   height: MediaQuery.of(context).size.height * 0.06,
                   decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: signUp == true? Center(
+                  child: signUp == true ? Center(
                     child: CircularProgressIndicator(
                       color: ColorsConstData.appBaseColor,
                     ),

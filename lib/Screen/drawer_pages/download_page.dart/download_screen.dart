@@ -92,7 +92,6 @@ class _DownloadScreenState extends State<DownloadScreen> {
       var name = url.toString().split("/").last;
       final file = await downloadFile(url,name);
       print("openFile call 111111 file $file");
-
       if(file == null) {
         return ;
       }
@@ -176,7 +175,7 @@ class _DownloadScreenState extends State<DownloadScreen> {
           return GestureDetector(
             onTap: () {
               //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MemberDetails()));
-              launch(Api.baseUrl + "${providerNotifier.getDownloadList[index]!.files}"
+              launch("${providerNotifier.getDownloadList[index]!.files}"
                   .replaceAll(" ", "%20"));
             },
             child: Container(
@@ -268,9 +267,9 @@ class _DownloadScreenState extends State<DownloadScreen> {
                               Platform.isAndroid
                                   ? GestureDetector(
                                 onTap: () {
-                                  print("print pdf Url${Api.baseUrl}${providerNotifier.getDownloadList[index]!.files.toString()}");
+                                  print("print pdf Url${providerNotifier.getDownloadList[index]!.files.toString()}");
                                   openFile(
-                                    "${Api.baseUrl}${providerNotifier.getDownloadList[index]!.files.toString()}",);
+                                    "${providerNotifier.getDownloadList[index]!.files.toString()}",);
                                 },
                                 child: ClipOval(
                                   child: Image.asset(

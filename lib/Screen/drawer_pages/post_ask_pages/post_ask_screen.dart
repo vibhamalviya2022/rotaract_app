@@ -58,7 +58,7 @@ class _PostAskScreenState extends State<PostAskScreen> {
             Navigator.of(context).pop();
           },
         ),
-      ),
+       ),
         body: isLoading == true
             ? Container(
           height: MediaQuery.of(context).size.height / 1.3,

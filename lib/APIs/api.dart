@@ -19,6 +19,7 @@ import '../model/board_of_director/get_all_bod_model.dart';
 import '../model/download_general_pdf_model/download_model.dart';
 import '../model/get_all_doctor_model.dart';
 import '../model/get_all_member_model.dart';
+import '../model/homepage_model/get_all_event_calender_model.dart';
 import '../model/homepage_model/get_all_event_model.dart';
 import '../model/homepage_model/get_current_date_event_model.dart';
 import '../model/login_model/login_model.dart';
@@ -60,9 +61,9 @@ class Api {
     var url = baseUrl + "admins/getAllEvent";
     print("getAllEventModelApi url $url");
     try {
-      var response = await http.post(Uri.parse(url));
+      var response = await http.post( Uri.parse(url));
       if (response.statusCode == 200) {
-        print("getAllEventModelApi Data  body${response.body}");
+        print("getAllEventModelApi Data body${response.body}");
         return GetAllEventModel.fromJson(jsonDecode(response.body));
       } else {
         print(response.reasonPhrase);
@@ -587,42 +588,5 @@ class Api {
     }
   }
 
-  /// Add Contact us Api Calling
-  /// Ashish
-  Future<AddContactUsDataModel?> addContactUsApiCalling(Map body) async{
-    print("addContactUsApiCalling  now");
-    var url = baseUrl + "members/addContactUs";
-    print('addContactUsApiCalling api calling now id ' + url.toString());
-    final response = await http.post(Uri.parse(url), body: body);
-    print("addContactUsApiCalling  now response is" + response.body);
-    if(response.statusCode == 200){
-      print("addContactUsApiCalling the Status Code code${response.statusCode}");
-      final data = json.decode(response.body);
-      print("addContactUsApiCalling of data response in 200 is" +
-          data.toString());
-      return AddContactUsDataModel.fromJson(data);
-    } else{
-      throw Exception(
-          "addContactUsApiCalling response code is${response.statusCode}");
-    }
-  }
-  /// Add FeedBack Api Calling
-  /// Ashish
-  Future<AddNewFeedBackDataModel?> addNewFeedBackApiCalling(Map body) async{
-    print("addNewFeedBackApiCalling  now");
-    var url = baseUrl + "members/addNewFeedback";
-    print('addNewFeedBackApiCalling api calling now id ' + url.toString());
-    final response = await http.post(Uri.parse(url), body: body);
-    print("addNewFeedBackApiCalling  now response is" + response.body);
-    if(response.statusCode == 200){
-      print("addNewFeedBackApiCalling the Status Code code${response.statusCode}");
-      final data = json.decode(response.body);
-      print("addNewFeedBackApiCalling of data response in 200 is" +
-          data.toString());
-      return AddNewFeedBackDataModel.fromJson(data);
-    } else{
-      throw Exception(
-          "addNewFeedBackApiCalling response code is${response.statusCode}");
-    }
-  }
+
 }
